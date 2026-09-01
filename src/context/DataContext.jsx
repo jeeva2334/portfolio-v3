@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { ref, get } from 'firebase/database';
+import { db } from '../lib/firebase';
 
 const DataContext = createContext();
 
@@ -10,12 +11,36 @@ export function DataProvider({ children }) {
 
   const fetchData = async () => {
     setIsLoading(true);
-    const { data: worksData } = await supabase.from('works').select('*').order('created_at', { ascending: false });
-    const { data: notesData } = await supabase.from('notes').select('*').order('created_at', { ascending: false });
-    
-    if (worksData) setWorks(worksData);
-    if (notesData) setNotes(notesData);
-    setIsLoading(false);
+    try {
+      const worksSnapshot = await get(ref(db, 'works'));
+      const notesSnapshot = await get(ref(db, 'notes'));
+      
+      if (worksSnapshot.exists()) {
+        const data = worksSnapshot.val();
+        const worksList = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+        setWorks(worksList);
+      } else {
+        setWorks([]);
+      }
+
+      if (notesSnapshot.exists()) {
+        const data = notesSnapshot.val();
+        const notesList = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+        setNotes(notesList);
+      } else {
+        setNotes([]);
+      }
+    } catch (err) {
+      console.error('Error fetching data from Firebase RTDB:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

@@ -284,7 +284,8 @@ h1 span {
     min-height: 165px;
     border-bottom: 1px solid var(--line);
     text-decoration: none;
-    overflow: hidden
+    overflow: hidden;
+    isolation: isolate;
 }
 
 .project::before {
@@ -314,7 +315,13 @@ h1 span {
     margin: 0;
     font-size: clamp(1.55rem, 3.2vw, 3rem);
     font-weight: 500;
-    letter-spacing: -.045em
+    letter-spacing: -.045em;
+    color: var(--ink);
+    transition: color .2s;
+}
+
+.project:hover h3 {
+    color: var(--paper);
 }
 
 .project-meta {
@@ -325,8 +332,10 @@ h1 span {
 }
 
 .project:hover .project-meta,
-.project:hover .project-number {
-    color: #484844
+.project:hover .project-number,
+.project:hover .project-arrow {
+    color: var(--paper);
+    opacity: 0.8;
 }
 
 .project-arrow {

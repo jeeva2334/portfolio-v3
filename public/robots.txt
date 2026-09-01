@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://builtbyjeeva.in/sitemap.xml

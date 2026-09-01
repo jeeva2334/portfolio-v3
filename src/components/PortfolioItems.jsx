@@ -12,12 +12,14 @@ export function ProjectItem({ index, project, onClick }) {
     onClick();
   };
 
+  const title = project?.title || project?.name || project?.workTitle || project?.heading || 'Untitled Project';
+
   return <a className="project" href="#" onClick={handleClick}>
     <span className="project-number">{index}</span>
-    <h3>{project.title}</h3>
-    <span className="project-meta">{project.stack}<br />{project.type}</span>
+    <h3>{title}</h3>
+    <span className="project-meta">{project?.stack}<br />{project?.type}</span>
     <span className="project-arrow" aria-hidden="true"><ArrowTopRightIcon width="24" height="24" /></span>
-    <img className="project-preview" src={project.image} alt="" width="1536" height="1024" loading="lazy" />
+    {project?.image && <img className="project-preview" src={project.image} alt="" width="1536" height="1024" loading="lazy" />}
   </a>
 }
 
@@ -31,6 +33,7 @@ export function WorkModal({ project, onClose }) {
 
   if (!project) return null;
   const isExternal = Boolean(project.link);
+  const title = project?.title || project?.name || project?.workTitle || project?.heading || 'Untitled Project';
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -38,11 +41,13 @@ export function WorkModal({ project, onClose }) {
         <button className="modal-close" onClick={onClose} aria-label="Close modal">
           <Cross1Icon width="24" height="24" />
         </button>
-        <div className="modal-image">
-          <img src={project.image} alt={project.title} />
-        </div>
+        {project.image && (
+          <div className="modal-image">
+            <img src={project.image} alt={title} />
+          </div>
+        )}
         <div className="modal-body">
-          <h2 className="modal-title">{project.title}</h2>
+          <h2 className="modal-title" style={{ color: 'var(--ink)' }}>{title}</h2>
           <div className="modal-meta">
             <span>{project.stack}</span> / <span>{project.type}</span>
           </div>
